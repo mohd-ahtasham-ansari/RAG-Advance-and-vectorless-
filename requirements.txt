@@ -36,3 +36,4 @@ torch
 numpy
 pandas
 tqdm
+sentence-transformers
