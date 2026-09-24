@@ -38,3 +38,10 @@ dist/
 build/
 *.egg-info/
 *.egg
+
+# Data / Vector Store / ChromaDB / Checkpoints
+data/vector_store/
+*.sqlite3
+*.bin
+*.pickle
+
