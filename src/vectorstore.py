@@ -7,34 +7,35 @@ from sentence_transformers import SentenceTransformer
 from src.embedding import EmbeddingPipeline
 
 class FaissVectorStore:
-    def _init_(self, persist_dir: str = faiss_store ,embedding_model ="all-MiniLM-L6-v2", chunk_size: int = 1024 , chunk_overlap: int = 256):
+    def __init__(self, persist_dir: str = "faiss_store", embedding_model: str = "all-MiniLM-L6-v2", chunk_size: int = 1024, chunk_overlap: int = 256):
         self.persist_dir = persist_dir
-        os.makedirs(self.persist_dir, exist_ok= True)
+        os.makedirs(self.persist_dir, exist_ok=True)
         self.index = None
         self.metadata = []
         self.embedding_model = embedding_model
         self.model = SentenceTransformer(embedding_model)
         self.chunk_size = chunk_size
         self.chunk_overlap = chunk_overlap
-        print(f"[INFO] LOading embedding model: {embedding_model}")
+        print(f"[INFO] Loading embedding model: {embedding_model}")
 
     def build_from_documents(self, documents: List[Any]):
         print(f"[INFO] Building vectorstore from {len(documents)} raw documents")
-        emb_pipe = EmbeddingPipeline(model_name=self.embedding_model, chunk_size = self.chunk_size, chunk_overlap  = self.chunk_overlap)
+        emb_pipe = EmbeddingPipeline(model_name=self.embedding_model, chunk_size=self.chunk_size, chunk_overlap=self.chunk_overlap)
         chunks = emb_pipe.chunk_documents(documents)
         embeddings = emb_pipe.embed_chunks(chunks)
         metadatas = [{"texts": chunk.page_content} for chunk in chunks]
-        self.add_embeddings(np.array(embeddings).astype('flaot32'), metadatas)
+        self.add_embeddings(np.array(embeddings).astype('float32'), metadatas)
         self.save()
         print(f"[INFO] vector store built and saved to {self.persist_dir}")
 
-    def add_embeddings(self, embeddings: np.ndarray, metadatas: List[Any]= None):
+    def add_embeddings(self, embeddings: np.ndarray, metadatas: List[Any] = None):
         dim = embeddings.shape[1]
         if self.index is None:
             self.index = faiss.IndexFlatL2(dim)
+        self.index.add(embeddings)
         if metadatas:
             self.metadata.extend(metadatas)
-        print(f"[INFO] Added {embeddings.shape[0]} vectorstore to Faiss index ")
+        print(f"[INFO] Added {embeddings.shape[0]} vectors to Faiss index")
 
     def save(self):
         faiss_path = os.path.join(self.persist_dir, "faiss.index")

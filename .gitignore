@@ -3,16 +3,18 @@ __pycache__/
 *.py[cod]
 *$py.class
 
-# Environments
+# Environments & Variables
 .venv/
 .env
 .env.*
+!.env.example
 env/
 venv/
 ENV/
 
 # Secrets and Configs
 *.pem
+*.key
 secrets.json
 
 # IDE / Editor
@@ -22,26 +24,47 @@ secrets.json
 *.swo
 *~
 
+# Operating System Files
+.DS_Store
+Thumbs.db
+desktop.ini
+
 # Pytest / Coverage
 .pytest_cache/
 .coverage
 htmlcov/
 
-# Type checking
+# Type checking / Linting / Build
 .mypy_cache/
 .pyre/
 .pytype/
-
-# uv / linting / build
 .ruff_cache/
 dist/
 build/
 *.egg-info/
 *.egg
 
-# Data / Vector Store / ChromaDB / Checkpoints
+# Jupyter Notebooks
+.ipynb_checkpoints/
+*/.ipynb_checkpoints/*
+
+# Vector Stores, Indexes & Embeddings
+faiss_store/
+vector_store/
+vectorstore/
+chroma_db/
 data/vector_store/
+*.faiss
 *.sqlite3
 *.bin
 *.pickle
+*.pkl
 
+# Model Checkpoints & Hugging Face caches
+models/
+checkpoints/
+hf_cache/
+.cache/
+
+# Logs
+*.log
